@@ -49,48 +49,48 @@ function Create(){
 }
 
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+// import React, { useEffect, useState } from 'react';
+// import { View, Text, ActivityIndicator } from 'react-native';
 
-export default function FetchData() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// export default function FetchData() {
+//   const [data, setData] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Use your Django server IP address or "10.0.2.2" for Android Emulator
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://192.168.x.x:8000/api/endpoint/');  // Your Django API
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const json = await response.json();
-        setData(json);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+//   useEffect(() => {
+//     // Use your Django server IP address or "10.0.2.2" for Android Emulator
+//     const fetchData = async () => {
+//       try {
+//         const response = await fetch('http://192.168.x.x:8000/api/endpoint/');  // Your Django API
+//         if (!response.ok) {
+//           throw new Error('Network response was not ok');
+//         }
+//         const json = await response.json();
+//         setData(json);
+//       } catch (error) {
+//         setError(error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
 
-    fetchData();
-  }, []);
+//     fetchData();
+//   }, []);
 
-  if (loading) {
-    return <ActivityIndicator size="large" />;
-  }
+//   if (loading) {
+//     return <ActivityIndicator size="large" />;
+//   }
 
-  if (error) {
-    return <Text>Error: {error.message}</Text>;
-  }
+//   if (error) {
+//     return <Text>Error: {error.message}</Text>;
+//   }
 
-  return (
-    <View>
-      <Text>{JSON.stringify(data)}</Text>
-    </View>
-  );
-}
+//   return (
+//     <View>
+//       <Text>{JSON.stringify(data)}</Text>
+//     </View>
+//   );
+// }
 
 
 
