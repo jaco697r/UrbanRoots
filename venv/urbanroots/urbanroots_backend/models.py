@@ -2,15 +2,26 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class CommunityType(models.Model):
-    name = models.CharField(max_length=255)
-
 class Community(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=50, unique=True)
     description = models.TextField(null=True)
-    type_id = models.ForeignKey('Type', on_delete=models.SET_NULL, null=True)
-    price_type = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=6, decimal_places=1)
-    image = models.ImageField(null=True, upload_to='images')
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
-    rented_by_user_id = models.ForeignKey(User, on_delete=models.SET_NULL, default=None, null=True, related_name='rented_products')
+    city = models.CharField(max_length=50)
+    max_participants = models.IntegerField()
+    min_kg_crops_per_person = models.FloatField()
+    creater_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    members = models.ManyToManyField(User, related_name='joined_communities', blank=True)
+
+    def __str__(self):
+        return self.name
+
+class CommunityMembership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    joined_at = models.DateTimeField(auto_now_add=True)
+    role = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'community')  # Ensure unique user
+
+    def __str__(self):
+        return f"{self.user.username} in {self.community.name}"

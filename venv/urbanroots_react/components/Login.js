@@ -6,29 +6,27 @@ import icon from '../assets/urbanrootslogo.png';
 import { useUserContext } from '../context';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { setUser, setToken } = useUserContext();
-
   const [showCreateUser, setShowCreateUser] = useState(false);
   const navigation = useNavigation();
 
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError('Please enter both email and password')
+    if (!username || !password) {
+      setError('Please enter both username and password')
       return;
     }
 
     try {
-      const data = await loginUser(email, password);
-      console.log(data)
+      const data = await loginUser(username, password);
       Alert.alert('Login Successful', `Welcome back, ${data.user.username}`)
       setUser(data.user);
       setToken(data.token);
-
       console.log('User context updated:', data.user);
+      console.log('Token context updated:', data.token);
 
       setError('')
     } catch (error) {
@@ -45,15 +43,12 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <Image source={icon} style={styles.logo}/>
-      {/* <Text style={styles.title}>Login</Text> */}
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
-        keyboardType="email-address"
-        textContentType="emailAddress"
       />
       <TextInput
         style={styles.input}

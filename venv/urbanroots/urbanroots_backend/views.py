@@ -8,13 +8,26 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer
+from .serializers import UserSerializer, CommunitySerializer
 
+    
 @api_view(['POST'])
-def logout_user(request):
-    logout(request)
-    return Response({'message': 'Logout successful'})
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    print('**********TTR LOGUT**************')
+    print(request.data)
+    print(request.headers)
+    try:
+        token = Token.objects.get(user=request.user)
+        print('***********TOKEN***************')
+        print(token)
+        token.delete()
+        print('**************************')
+        return Response({'message': 'Logout successful'})
+    except Token.DoesNotExist:
+        print('************except**************')
+        return Response({'error': 'Invalid token or token not found'}, status=400)
 
 @api_view(['POST'])
 def login(request):
@@ -50,3 +63,23 @@ def create_user(request):
 @permission_classes([IsAuthenticated])
 def test_token(request):
     return Response('PERMISSION GRANTED TO {}'.format(request.user.username))
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def create_community(request):
+    request.data['creater_user_id'] = get_user_from_token(request.data['token'])
+    print(request.data)
+    serializer = CommunitySerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def get_user_from_token(token):
+    try:
+        token_obj = Token.objects.get(key=token)
+        return token_obj.user.id
+    except Token.DoesNotExist:
+        return False
