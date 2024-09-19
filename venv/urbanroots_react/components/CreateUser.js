@@ -5,7 +5,7 @@ import LoginScreen from './Login';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CreateUserScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setusername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordAgain, setPasswordAgain] = useState('');
   const [error, setError] = useState('');
@@ -13,8 +13,8 @@ export default function CreateUserScreen() {
   const navigation = useNavigation();
 
   const createUser = async () => {
-    if (!email || !password || !passwordAgain) {
-      setError('Please enter both email and password');
+    if (!username || !password || !passwordAgain) {
+      setError('Please enter both username and password');
       return;
     }
     if (password != passwordAgain) {
@@ -22,9 +22,9 @@ export default function CreateUserScreen() {
         return;
     }
     try {
-      const data = await createNewUser(email, password);
+      const data = await createNewUser(username, password);
       console.log(data)
-      Alert.alert('User Created', `Welcome, ${data.user.email}`);
+      Alert.alert('User Created', `Welcome, ${data.user.username}`);
       setBack('true')
 
       setError('');
@@ -42,12 +42,10 @@ export default function CreateUserScreen() {
       <Text style={styles.title}>Create User</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="username"
+        value={username}
+        onChangeText={setusername}
         autoCapitalize="none"
-        keyboardType="email-address"
-        textContentType="emailAddress"
       />
       <TextInput
         style={styles.input}

@@ -1,7 +1,8 @@
-from django.urls import path
-from .views import login_and_get_token, create_user
+from django.urls import re_path
+from . import views
 
 urlpatterns = [
-    path('auth/login', login_and_get_token , name='login'),
-    path('auth/createUser', create_user , name='create user'),
+    re_path('auth/login', views.login),
+    re_path('auth/createUser', views.create_user),
+    re_path('auth/testToken', views.test_token)
     ]
