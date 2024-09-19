@@ -1,6 +1,6 @@
 const apiRoot = "http://192.168.1.217:8000";
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (username, password) => {
     try {
       const response = await fetch(`${apiRoot}/api/auth/login`, {
         method: 'POST',
@@ -8,14 +8,14 @@ export const loginUser = async (email, password) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
+          username: username,
           password: password,
         }),
       });
       const data = await response.json();
   
       if (!response.ok) {
-        throw new Error(data.detail || 'Invalid email or password');
+        throw new Error(data.detail || 'Invalid username or password');
       }
   
       return data;
@@ -24,7 +24,7 @@ export const loginUser = async (email, password) => {
     }
   };
 
-export const createNewUser = async (email, password) => {
+export const createNewUser = async (username, password) => {
   try {
     const response = await fetch(`${apiRoot}/api/auth/createUser`, {
       method: 'POST',
@@ -32,7 +32,7 @@ export const createNewUser = async (email, password) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email,
+        username: username,
         password: password,
       }),
     });
@@ -40,7 +40,7 @@ export const createNewUser = async (email, password) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Invalid email or password');
+      throw new Error(data.detail || 'Invalid username or password');
     }
 
     return data;

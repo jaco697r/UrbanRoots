@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { View, Image, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { loginUser } from './api';
-import CreateUserScreen from './CreateUser';
 import { useNavigation } from '@react-navigation/native';
 import icon from '../assets/urbanrootslogo.png';
+import { useUserContext } from '../context';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { setUser, setToken } = useUserContext();
 
   const [showCreateUser, setShowCreateUser] = useState(false);
   const navigation = useNavigation();
@@ -23,7 +24,11 @@ export default function LoginScreen() {
     try {
       const data = await loginUser(email, password);
       console.log(data)
-      // Alert.alert('Login Successful', `Welcome back, ${data.user.email}`)
+      Alert.alert('Login Successful', `Welcome back, ${data.user.username}`)
+      setUser(data.user);
+      setToken(data.token);
+
+      console.log('User context updated:', data.user);
 
       setError('')
     } catch (error) {

@@ -3,6 +3,7 @@ import { SafeAreaView, TextInput, Button, Text, StyleSheet, Alert } from 'react-
 import { createNewUser } from './api';
 import LoginScreen from './Login';
 import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
 
 export default function CreateUserScreen() {
   const [username, setusername] = useState('');
@@ -33,16 +34,18 @@ export default function CreateUserScreen() {
     }
   };
 
-  if (back){
-    navigation.navigate('Login'); 
-  }
+    useEffect(() => {
+      if (back) {
+        navigation.navigate('Login');
+      }
+    }, [back]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Create User</Text>
       <TextInput
         style={styles.input}
-        placeholder="username"
+        placeholder="Username"
         value={username}
         onChangeText={setusername}
         autoCapitalize="none"
