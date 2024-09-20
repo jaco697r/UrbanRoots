@@ -107,3 +107,27 @@ export const createCommunity = async (communityData) => {
     console.log('Error during community creation:', error);
   }
 };
+
+export const fetchCommunities = async (request) => {
+  console.log(request)
+    try {
+      const response = await fetch(`${apiRoot}/api/myCommunities`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${request.token}`,
+        },
+        body: JSON.stringify({
+          token: request.token,
+        }),
+      });
+    // Make sure the response is awaited and fully processed
+    const data = await response.json();  // Ensure you are properly awaiting the JSON parsing
+    console.log("DATA received on frontend:", data);  // Log the actual data received in the frontend
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching communities:', error);
+    throw error;
+  }
+};

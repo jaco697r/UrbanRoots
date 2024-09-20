@@ -9,22 +9,19 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, CommunitySerializer
+from .models import Community
 
     
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
-    print('**********TTR LOGUT**************')
     print(request.data)
     print(request.headers)
     try:
         token = Token.objects.get(user=request.user)
-        print('***********TOKEN***************')
-        print(token)
         token.delete()
-        print('**************************')
-        return Response({'message': 'Logout successful'})
+        return Response({'message' : 'Logout successful' })
     except Token.DoesNotExist:
         print('************except**************')
         return Response({'error': 'Invalid token or token not found'}, status=400)
@@ -76,6 +73,23 @@ def create_community(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def my_communities(request):
+    print(request)
+    user = get_user_from_token(request.data['token'])
+    if not user:
+        return Response("User not found from token", status=status.HTTP_400_BAD_REQUEST)
+    created_communities = Community.objects.filter(creater_user_id=user)
+    joined_communities = Community.objects.filter(members=user)
+    all_communities = created_communities | joined_communities
+    data = [{"id": community.id, "name": community.name, "city": community.city} for community in all_communities]
+    print('********DATA')
+    print(data)
+    return Response(data)
 
 def get_user_from_token(token):
     try:

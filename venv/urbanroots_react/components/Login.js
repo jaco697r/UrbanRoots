@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: '#FAFFFF'
   },
   title: {
     fontSize: 28,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     resizeMode: 'contain',
     // marginBottom: '10%',
-    width: '30%',
-    height: '30%'
+    width: '60%',
+    height: '60%'
   }
 });

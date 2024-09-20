@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import LocationScreen from './Location';
 
-export default function FindCommunity() {
+export default function MyCommunityItem() {
   return (
     <View style={styles.container}>
-      <LocationScreen/>
+
     </View>
   );
 }

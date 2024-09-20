@@ -21,7 +21,7 @@ class CommunityMembership(models.Model):
     role = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
-        unique_together = ('user', 'community')  # Ensure unique user
+        unique_together = ('user', 'community')  # Ensure unique user in each community (Can't join several times)
 
     def __str__(self):
         return f"{self.user.username} in {self.community.name}"

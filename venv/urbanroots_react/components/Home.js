@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import icon from '../assets/urbanrootslogo.png';
 
 
 export default function HomeScreen() { 
@@ -9,7 +9,7 @@ export default function HomeScreen() {
  
   return (
     <View style={styles.container}>
-
+      <Image source={icon} style={styles.logo}/>
       <View style={styles.body}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Find Community')}>
           <Text style={styles.buttonText} >Find Community</Text>
@@ -29,19 +29,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
-  },
-  header: {
-    backgroundColor:  '#a3eb4b', // Bright green color
-    paddingVertical: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    alignItems: 'center',
+    backgroundColor: '#FAFFFF',
   },
   title: {
     fontSize: 24,
-    color: '#5c401b', // Dark brownish color for title text
+    color: '#5c401b',
     fontWeight: 'bold',
 
   },
@@ -70,4 +62,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000',
   },
+  logo:{
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    // marginBottom: '10%',
+    width: '60%',
+    height: '60%'
+  }
 });  

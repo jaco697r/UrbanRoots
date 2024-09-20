@@ -30,3 +30,11 @@ Content-Type: application/json
 Authorization: Token 3372c363ccb74c696e84f7b55182c5d23b2f4e8d
 
 {"name": "test4", "description": "123", "city": "Aalborg", "max_participants": "10", "min_kg_crops_per_person": 5.3,  "creater_user_id": 3}
+
+###
+
+GET http://0.0.0.0:8000/api/myCommunities
+Content-Type: application/json
+Authorization: Token 3372c363ccb74c696e84f7b55182c5d23b2f4e8d
+
+{"token": "3372c363ccb74c696e84f7b55182c5d23b2f4e8d"}

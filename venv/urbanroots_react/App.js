@@ -10,6 +10,8 @@ import HomeScreen from './components/Home';
 import FindCommunity from './components/FindCommunity';
 import Logout from './components/Logout';
 import CreateCommunity from './components/CreateCommunity';
+import MyCommunities from './components/MyCommunities';
+import MyCommunityItem from './components/MyCommunityItem';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -20,22 +22,49 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       {user ? (
-        <Drawer.Navigator
-        screenOptions={{
-          headerStyle: {
-             backgroundColor: '#a3eb4b',
-          },
-          headerTintColor: '#fff',       
-           headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-          <Drawer.Screen name="Home" component={HomeScreen} options={{ headerShown: true }} />
-          <Drawer.Screen name="Find Community" component={FindCommunity} />
-          <Drawer.Screen name="Create Community" component={CreateCommunity} />
-          <Drawer.Screen name='Logout' component={Logout}/>
-        </Drawer.Navigator>
+        <Stack.Navigator>
+          <Stack.Screen name="Drawer" options={{ headerShown: false }}>
+            {() => (
+              <Drawer.Navigator
+                screenOptions={{
+                  headerStyle: {
+                    backgroundColor: 'lightgreen',
+                  },
+                  headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                }
+              }}
+              >
+                <Drawer.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{ headerShown: true }}
+                  backgroundColor='blue'
+                  
+                />
+                <Drawer.Screen
+                  name="Find Community"
+                  component={FindCommunity}
+                />
+                <Drawer.Screen
+                  name="Create Community"
+                  component={CreateCommunity}
+                />
+                <Drawer.Screen
+                  name="My Communities"
+                  component={MyCommunities}
+                />
+                <Drawer.Screen name="Logout" component={Logout} />
+              </Drawer.Navigator>
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="MyCommunityItem"
+            component={MyCommunityItem}
+            options={{ title: 'Community Details' }}
+          />
+        </Stack.Navigator>
       ) : (
         <Stack.Navigator>
           <Stack.Screen
