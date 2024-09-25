@@ -7,5 +7,5 @@ urlpatterns = [
     re_path('auth/testToken', views.test_token),
     re_path('auth/logout', views.logout),
     re_path('createCommunity', views.create_community),
-    re_path('myCommunities', views.my_communities)
+    re_path('myCommunities', views.my_communities, name="my_communities")
     ]
