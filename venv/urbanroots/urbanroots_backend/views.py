@@ -16,26 +16,21 @@ from .models import Community
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
-    print(request.data)
-    print(request.headers)
     try:
         token = Token.objects.get(user=request.user)
         token.delete()
         return Response({'message' : 'Logout successful' })
     except Token.DoesNotExist:
-        print('************except**************')
         return Response({'error': 'Invalid token or token not found'}, status=400)
 
 @api_view(['POST'])
 def login(request):
-    print(request.data)
     try:
         user = get_object_or_404(User, username=request.data['username'])
         print(user)
     except Exception as e:
         return Response({"message": "Not Found",'token': ''}, status=status.HTTP_400_BAD_REQUEST)
     if not user.check_password(request.data['password']):
-        print('PASSWORD IS FALSE')
         return Response({"message": "Not Found",'token': ''}, status=status.HTTP_400_BAD_REQUEST)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
@@ -66,7 +61,6 @@ def test_token(request):
 @permission_classes([IsAuthenticated])
 def create_community(request):
     request.data['creater_user_id'] = get_user_from_token(request.data['token'])
-    print(request.data)
     serializer = CommunitySerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -118,6 +112,8 @@ def my_communities(request):
     ]
 
     return Response(all_communities)
+
+
 def get_user_from_token(token):
     try:
         token_obj = Token.objects.get(key=token)
