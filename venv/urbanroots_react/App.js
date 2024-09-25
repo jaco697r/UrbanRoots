@@ -22,7 +22,16 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       {user ? (
-        <Stack.Navigator>
+        <Stack.Navigator               
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: 'lightgreen',
+          },
+          headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+        }
+      }}>
           <Stack.Screen name="Drawer" options={{ headerShown: false }}>
             {() => (
               <Drawer.Navigator
@@ -41,7 +50,6 @@ function AppNavigator() {
                   component={HomeScreen}
                   options={{ headerShown: true }}
                   backgroundColor='blue'
-                  
                 />
                 <Drawer.Screen
                   name="Find Community"
@@ -60,9 +68,14 @@ function AppNavigator() {
             )}
           </Stack.Screen>
           <Stack.Screen
-            name="MyCommunityItem"
+            name="My Community Item"
             component={MyCommunityItem}
             options={{ title: 'Community Details' }}
+          />
+          <Stack.Screen
+            name="Find Community Results"
+            component={MyCommunityItem}
+            options={{ title: 'Results' }}
           />
         </Stack.Navigator>
       ) : (

@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
 import { createCommunity } from './api';
 import { useUserContext } from '../context';
+import { useNavigation } from '@react-navigation/native';
+import { CheckBox } from '@rneui/themed';
 
 export default function CreateCommunity() {
-  const [city, setCity] = useState('');
-  const [communityName, setCommunityName] = useState('');
-  const [communityDescription, setCommunityDescription] = useState('');
-  const [maxParticipants, setMaxParticipants] = useState('');
-  const [minCropsPerPerson, setMinCropsPerPerson] = useState('');
+  const [city, setCity] = useState('')
+  const [communityName, setCommunityName] = useState('')
+  const [communityDescription, setCommunityDescription] = useState('')
+  const [maxParticipants, setMaxParticipants] = useState('')
+  const [minCropsPerPerson, setMinCropsPerPerson] = useState('')
+  const [cycle_duration_days, setCycleDurationDays] = useState('')
+  const [inviteOnly, setInviteOnly] = useState(false)
 
   const {token} = useUserContext()
+  const navigation = useNavigation()
 
-  const handleCreateCommunity = () => {
+  const handleCreateCommunity = async () => {
     const communityData = {
       token,  
       city,
@@ -20,14 +25,45 @@ export default function CreateCommunity() {
       communityDescription,
       max_participants: parseInt(maxParticipants, 10),
       min_kg_crops_per_person: parseFloat(minCropsPerPerson),
-    };
-    console.log("Community data: ", communityData);
-    createCommunity(communityData)
-  };
+      cycle_duration_days: parseInt(cycle_duration_days, 10),
+      inviteOnly
+    }
+
+    response = await createCommunity(communityData)
+
+    // All this needs refactoring if we have the time - Spaghetti code. 
+    // Server needs to send error codes instead
+    let hasErrors = false
+    console.log('RESPONSE')
+    console.log(Object.keys(response).length)
+    for (const [key, value] of Object.entries(response)) {
+      if (typeof value === 'string' && value.includes("This field may not be blank.")) {
+        console.log(`Field: ${key}, Error: ${value}`);
+        Alert.alert('Required field missing', `${key}`);
+        hasErrors = true;
+      }
+    }
+  
+    if (response === 'unique_name_constraint') {
+      Alert.alert('Choose another name', 'A community with this name already exists.');
+      hasErrors = true
+    }
+
+    if (!hasErrors) {
+      Alert.alert('Congratulations', 'Community Created');
+      navigation.navigate('Home')
+    }
+
+    console.log('Response length:', Object.keys(response).length);
+    if  (Number(Object.keys(response).length) > 3) {
+      Alert.alert('Congratulations', 'Community Created');
+      navigation.navigate('Home');
+    }
+  }
 
   return (
     <View style={styles.container}>
-    <Text style={styles.label}>Community Name</Text>
+    <Text style={styles.label}>Community Name*</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter Community Name"
@@ -41,7 +77,7 @@ export default function CreateCommunity() {
         value={communityDescription}
         onChangeText={setCommunityDescription}
       />
-      <Text style={styles.label}>City</Text>
+      <Text style={styles.label}>City*</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter the city"
@@ -56,13 +92,28 @@ export default function CreateCommunity() {
         value={maxParticipants}
         onChangeText={setMaxParticipants}
       />
-      <Text style={styles.label}>Minimum Crops per Person (kg)</Text>
+      <Text style={styles.label}>Cycle Duration (Days)*</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter duration of a harvest cycle in days"
+        keyboardType="numeric"
+        value={cycle_duration_days}
+        onChangeText={setCycleDurationDays}
+      />
+      <Text style={styles.label}>Minimum Estimated Crops per Person (kg)</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter minimum crops in kg"
         keyboardType="numeric"
         value={minCropsPerPerson}
         onChangeText={setMinCropsPerPerson}
+      />
+
+      <CheckBox
+        title="Invite Only"
+        checked={inviteOnly}
+        onPress={() => setInviteOnly(!inviteOnly)}
+        backgroundColor='#FAFFFF'
       />
       <Button title="Create Community" onPress={handleCreateCommunity} />
     </View>
@@ -72,7 +123,7 @@ export default function CreateCommunity() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#FAFFFF',
     padding: 20,
   },
   title: {
@@ -88,11 +139,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    height: 40,
+    height: 35,
     borderColor: '#ccc',
     borderWidth: 1,
     paddingHorizontal: 10,
-    marginBottom: 20,
+    marginBottom: 15,
     borderRadius: 5,
   }
 });

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'urbanroots_backend', 
+    'urbanroots_backend',
+    'django_extensions', 
 ]
 
 MIDDLEWARE = [

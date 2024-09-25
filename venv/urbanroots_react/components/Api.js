@@ -93,18 +93,30 @@ export const createCommunity = async (communityData) => {
         description: communityData.description,
         city: communityData.city,
         max_participants: communityData.max_participants,
-        min_kg_crops_per_person: communityData.min_kg_crops_per_person
+        min_kg_crops_per_person: communityData.min_kg_crops_per_person,
+        cycle_duration_days: communityData.cycle_duration_days,
+        invite_only: communityData.inviteOnly
       }),
     });
     console.log('BEFORE RESPONSE')
     const data = await response.json();
     if (!response.ok) {
+      console.log('Error from backend:', data);
+      if (data['name'] == "community with this name already exists."){
+        return 'unique_name_constraint'
+      }      
+      for (const [key, value] of Object.entries(data)) {
+        if (value.includes("This field may not be blank.")) {
+          console.log(`Field: ${key}, Error: ${value}`);
+          return { [key]: value[0], 'code':'required_missing' };
+        }
+      }
       throw new Error(data.detail || 'Something went wrong');
     }
     console.log('Community Created');
     return data;
   } catch (error) {
-    console.log('Error during community creation:', error);
+    console.log('Error during community creation:', error)
   }
 };
 
@@ -121,9 +133,8 @@ export const fetchCommunities = async (request) => {
           token: request.token,
         }),
       });
-    // Make sure the response is awaited and fully processed
-    const data = await response.json();  // Ensure you are properly awaiting the JSON parsing
-    console.log("DATA received on frontend:", data);  // Log the actual data received in the frontend
+    const data = await response.json(); 
+    console.log("DATA received on frontend:", data);
 
     return data;
   } catch (error) {

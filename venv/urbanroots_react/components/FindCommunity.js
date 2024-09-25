@@ -1,11 +1,43 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet, Text } from 'react-native';
 import LocationScreen from './Location';
+import MyCommunities from './MyCommunities';
 
 export default function FindCommunity() {
+  const [searchCity, setSearchCity] = useState('');
+  const [communities, setCommunities] = useState([]);
+
+  const handleCityChange = (city) => {
+    setSearchCity(city);
+    fetchCommunities(city); 
+  };
+
+  const fetchCommunities = (city) => {
+    const fetchedCommunities = [
+      { id: 1, name: 'Community A', city: 'New York', is_creator: true },
+      { id: 2, name: 'Community B', city: 'New York', is_creator: false },
+      { id: 3, name: 'Community C', city: 'Aalborg', is_creator: true },
+    ];
+
+    const filteredCommunities = fetchedCommunities.filter(community =>
+      community.city.toLowerCase().includes(city.toLowerCase())
+    );
+
+    setCommunities(filteredCommunities);
+  };
+
   return (
     <View style={styles.container}>
-      <LocationScreen/>
+      <LocationScreen onCityChange={handleCityChange} />
+      <Text>Search for a city</Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="City Search"
+        value={searchCity}
+        onChangeText={handleCityChange} 
+      />
+
+      <MyCommunities communitiesList={communities} />
     </View>
   );
 }
@@ -13,43 +45,14 @@ export default function FindCommunity() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
-  },
-  title: {
-    fontSize: 24,
-    color: '#5c401b', 
-    fontWeight: 'bold',
-  },
-  menuIcon: {
-    padding: 10,
-  },
-  icon: {
-    width: 30,
-    height: 30,
-  },
-  body: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: 22,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: 'lightgrey',
     padding: 20,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: '80%',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3,
   },
-  buttonText: {
-    fontSize: 18,
-    color: '#000',
+  searchInput: {
+    height: 40,
+    borderColor: '#DDD',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginBottom: 20,
   },
 });
