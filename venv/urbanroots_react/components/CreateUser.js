@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { SafeAreaView, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView, TextInput, Button, Text, StyleSheet, Alert, Image } from 'react-native';
 import { createNewUser } from './api';
 import LoginScreen from './Login';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
+import icon from '../assets/urbanrootslogo.png';
 
 export default function CreateUserScreen() {
   const [username, setusername] = useState('');
@@ -42,7 +43,7 @@ export default function CreateUserScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Create User</Text>
+      <Image source={icon} style={styles.logo}/>
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -79,8 +80,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingHorizontal: 20,
     width: '100%',
-    backgroundColor: 'white',
-    paddingTop: '50%'
+    backgroundColor: '#FAFFFF',
+    paddingTop: '1%'
   },
   title: {
     fontSize: 28,
@@ -89,6 +90,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  inputspecial: {
     height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -107,4 +116,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17
   },
+  logo:{
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    width: '50%',
+    height: '50%',
+    marginBottom: '10%'
+  }
 });
