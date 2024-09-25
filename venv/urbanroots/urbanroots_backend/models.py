@@ -6,8 +6,10 @@ class Community(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(null=True)
     city = models.CharField(max_length=50)
-    max_participants = models.IntegerField()
-    min_kg_crops_per_person = models.FloatField()
+    max_participants = models.IntegerField(null=True)
+    min_kg_crops_per_person = models.FloatField(null=True)
+    cycle_duration_days = models.IntegerField(default=90)
+    invite_only = models.BooleanField(default=False)
     creater_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     members = models.ManyToManyField(User, related_name='joined_communities', blank=True)
 

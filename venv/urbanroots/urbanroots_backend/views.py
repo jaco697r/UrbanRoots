@@ -79,18 +79,45 @@ def create_community(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def my_communities(request):
-    print(request)
     user = get_user_from_token(request.data['token'])
     if not user:
-        return Response("User not found from token", status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "User not found from token"}, status=status.HTTP_400_BAD_REQUEST)
     created_communities = Community.objects.filter(creater_user_id=user)
-    joined_communities = Community.objects.filter(members=user)
-    all_communities = created_communities | joined_communities
-    data = [{"id": community.id, "name": community.name, "city": community.city} for community in all_communities]
-    print('********DATA')
-    print(data)
-    return Response(data)
+    joined_communities = Community.objects.filter(members=user).exclude(creater_user_id=user)
+    other_communities = Community.objects.exclude(creater_user_id=user).exclude(members=user)
+    all_communities = [
+        {
+            "id": community.id,
+            "name": community.name,
+            "city": community.city,
+            "description": community.description,
+            "cycle_duration_days": community.cycle_duration_days,
+            "is_creator": True
+        }
+        for community in created_communities
+    ] + [
+        {
+            "id": community.id,
+            "name": community.name,
+            "city": community.city,
+            "description": community.description,
+            "cycle_duration_days": community.cycle_duration_days,
+            "is_creator": False
+        }
+        for community in joined_communities
+    ] + [
+        {
+            "id": community.id,
+            "name": community.name,
+            "city": community.city,
+            "description": community.description,
+            "cycle_duration_days": community.cycle_duration_days,
+            "is_creator": False
+        }
+        for community in other_communities
+    ]
 
+    return Response(all_communities)
 def get_user_from_token(token):
     try:
         token_obj = Token.objects.get(key=token)
