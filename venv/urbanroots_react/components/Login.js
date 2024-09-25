@@ -35,7 +35,6 @@ export default function LoginScreen() {
   };
 
   if (showCreateUser) {
-    console.log('HANDLECREATE USE2')
     setShowCreateUser(false)
     navigation.navigate('Create User'); 
   };

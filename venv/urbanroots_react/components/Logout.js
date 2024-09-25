@@ -8,10 +8,6 @@ export default function Logout() {
   const { setUser } = useUserContext();
 
   useEffect(() => {
-    console.log('Logout component mounted');
-    console.log('**********token logout**********');
-    console.log(token);
-
     logoutUser(token);
     setToken('')
     setUser('')
