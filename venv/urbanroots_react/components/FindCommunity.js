@@ -1,29 +1,37 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { View, TextInput, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import LocationScreen from './Location';
 import MyCommunities from './MyCommunities';
+import { fetchCommunities } from './api';
+import { useUserContext } from '../context';
 
 export default function FindCommunity() {
   const [searchCity, setSearchCity] = useState('');
   const [communities, setCommunities] = useState([]);
+  const { token } = useUserContext();
 
   const handleCityChange = (city) => {
     setSearchCity(city);
-    fetchCommunities(city); 
+    fetchData(city); 
   };
 
-  const fetchCommunities = (city) => {
-    const fetchedCommunities = [
-      { id: 1, name: 'Community A', city: 'New York', is_creator: true },
-      { id: 2, name: 'Community B', city: 'New York', is_creator: false },
-      { id: 3, name: 'Community C', city: 'Aalborg', is_creator: true },
-    ];
+  const fetchData = async (city) => {
+    if (city){
+      try {
+        const request = { token: token };
+        const response = await fetchCommunities(request);
+        if (!response){
+          return
+        }
+        const filteredCommunities = response.filter(community => 
+          community.city.toLowerCase().includes(city.trim().toLowerCase())
+        );
 
-    const filteredCommunities = fetchedCommunities.filter(community =>
-      community.city.toLowerCase().includes(city.toLowerCase())
-    );
-
-    setCommunities(filteredCommunities);
+        setCommunities(filteredCommunities);
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    }
   };
 
   return (
@@ -36,7 +44,6 @@ export default function FindCommunity() {
         value={searchCity}
         onChangeText={handleCityChange} 
       />
-
       <MyCommunities communitiesList={communities} />
     </View>
   );

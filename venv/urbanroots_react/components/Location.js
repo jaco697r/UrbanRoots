@@ -11,7 +11,7 @@ export default function LocationScreen({ onCityChange }) {
         (async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-            setErrorMsg('Permission denied');
+            setErrorMsg('Permission for GPS denied');
             return;
         }
 
@@ -43,10 +43,10 @@ export default function LocationScreen({ onCityChange }) {
 
   return (
      <View style={{ padding: 20 }}>
-      {/* <Text>User's current location: </Text>
+      <Text>User's current location: </Text>
       <Text>Latitude: {location.coords.latitude}</Text>
       <Text>Longitude: {location.coords.longitude}</Text>
-      <Text>City: {city}</Text> */}
+      <Text>City: {city}</Text>
     </View>
   );
 }

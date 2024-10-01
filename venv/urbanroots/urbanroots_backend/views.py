@@ -23,6 +23,7 @@ def logout(request):
     except Token.DoesNotExist:
         return Response({'error': 'Invalid token or token not found'}, status=400)
 
+
 @api_view(['POST'])
 def login(request):
     try:
@@ -35,6 +36,7 @@ def login(request):
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
     return Response({"message": "Welcome", 'token': token.key, 'user': serializer.data})
+
 
 @api_view(['POST'])
 def create_user(request):
@@ -50,11 +52,13 @@ def create_user(request):
         return Response({"message": "Welcome", 'token': token.key, 'user': serializer.data})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
     return Response('PERMISSION GRANTED TO {}'.format(request.user.username))
+
 
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -70,9 +74,40 @@ def create_community(request):
 
 
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def join_community(request):
+    try:
+        community = get_object_or_404(Community, id=request.data['community_id'])
+        user = request.user
+        if community.members.filter(id=user.id).exists():
+            return Response({'message': 'You are already a member of this community.'}, status=401)
+        community.members.add(user)
+        return Response({'message': 'Successfully joined the community.'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
+    
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def leave_community(request):
+    try:
+        community = get_object_or_404(Community, id=request.data['community_id'])
+        user = request.user
+        print(community.members.filter(id=user.id).exists())
+        if not community.members.filter(id=user.id).exists():
+            return Response({'message': 'Could not find user in community'}, status=401)
+        community.members.remove(user)
+        return Response({'message': 'Successfully left the community.'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
+
+
+@api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def my_communities(request):
+    print(request)
     user = get_user_from_token(request.data['token'])
     if not user:
         return Response({"detail": "User not found from token"}, status=status.HTTP_400_BAD_REQUEST)
@@ -86,7 +121,8 @@ def my_communities(request):
             "city": community.city,
             "description": community.description,
             "cycle_duration_days": community.cycle_duration_days,
-            "is_creator": True
+            "is_creator": True,
+            "members": list(community.members.values_list('username', flat=True))
         }
         for community in created_communities
     ] + [
@@ -96,7 +132,8 @@ def my_communities(request):
             "city": community.city,
             "description": community.description,
             "cycle_duration_days": community.cycle_duration_days,
-            "is_creator": False
+            "is_creator": False,
+            "members": list(community.members.values_list('username', flat=True))
         }
         for community in joined_communities
     ] + [
@@ -106,7 +143,8 @@ def my_communities(request):
             "city": community.city,
             "description": community.description,
             "cycle_duration_days": community.cycle_duration_days,
-            "is_creator": False
+            "is_creator": False,
+            "members": list(community.members.values_list('username', flat=True))
         }
         for community in other_communities
     ]

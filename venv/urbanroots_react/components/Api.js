@@ -121,6 +121,7 @@ export const createCommunity = async (communityData) => {
 };
 
 export const fetchCommunities = async (request) => {
+  console.log("FETCHCOMMUNITITES")
   console.log(request)
     try {
       const response = await fetch(`${apiRoot}/api/myCommunities`, {
@@ -139,6 +140,46 @@ export const fetchCommunities = async (request) => {
     return data;
   } catch (error) {
     console.error('Error fetching communities:', error);
+    throw error;
+  }
+};
+
+export const joinCommunity = async (request) => {
+    try {
+      const response = await fetch(`${apiRoot}/api/joinCommunity`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${request.token}`,
+        },
+        body: JSON.stringify({community_id: request.community_id}),
+      });
+    const data = await response 
+    console.log("DATA received on frontend:", data)
+
+    return data
+  } catch (error) {
+    console.error('Error fetching communities:', error)
+    throw error;
+  }
+};
+
+export const leaveCommunity = async (request) => {
+    try {
+      const response = await fetch(`${apiRoot}/api/leaveCommunity`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${request.token}`,
+        },
+        body: JSON.stringify({community_id: request.community_id}),
+      });
+    const data = await response 
+    console.log("DATA received on frontend:", data)
+
+    return data
+  } catch (error) {
+    console.error('Error fetching communities:', error)
     throw error;
   }
 };

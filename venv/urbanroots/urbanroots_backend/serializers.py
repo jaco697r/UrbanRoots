@@ -10,7 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username')
 
-
 class CommunitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Community

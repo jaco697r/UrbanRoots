@@ -23,6 +23,10 @@ export default function MyCommunities({ communitiesList }) {
         setLoading(false);
       }
     };
+
+    useEffect(() => {
+      setCommunities(communitiesList);
+    }, [communitiesList]);
   
     useFocusEffect(
       useCallback(() => {
